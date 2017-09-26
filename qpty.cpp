@@ -56,10 +56,6 @@ void qpty::updateBuffer() {
     if(buffer[buffer_cursor] == 0) {
         return;
     }
-    if(buffer[buffer_cursor] == 255) {
-        buffer_cursor ++;
-        this->updateBuffer();
-    }
     if(buffer_cursor >= max_cursor)
         buffer_cursor = 0;
     this->processString(buffer+buffer_cursor);
@@ -183,7 +179,7 @@ void qpty::processInput(const char *c)
 
 void qpty::processString(const char *array) {
     static QByteArray last_bit;
-    QByteArray buf(array);
+    QByteArray buf = QByteArray::fromRawData(array,strlen(array));
     QByteArray buffer = last_bit + buf;
     if(strlen(buffer.data()) == 1 && buffer[0] == 7)
         return;

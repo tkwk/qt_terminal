@@ -18,10 +18,10 @@ public:
     virtual void clearCursorLine(int mode) {} //mode = 0:clear from cursor to end of line, 1:clear from cursor to end of line, 2:clear all the line
     virtual void clearCursorScreen(int mode) {}
 
-    virtual const int & cursorX() {return 0;}
-    virtual const int & cursorY() {return 0;}
-    virtual const int & sizeX() {return 0;}
-    virtual const int & sizeY() {return 0;}
+    virtual int cursorX() {return 0;}
+    virtual int cursorY() {return 0;}
+    virtual int sizeX() {return 0;}
+    virtual int sizeY() {return 0;}
 };
 
 #endif // DUMMYPTY_H

@@ -63,10 +63,10 @@ public:
     virtual void clearCursorLine(int mode) = 0; //mode = 0:clear from cursor to end of line, 1:clear from cursor to end of line, 2:clear all the line
     virtual void clearCursorScreen(int mode) = 0;
 
-    virtual const int & cursorX() = 0;
-    virtual const int & cursorY() = 0;
-    virtual const int & sizeX() = 0;
-    virtual const int & sizeY() = 0;
+    virtual int cursorX() = 0;
+    virtual int cursorY() = 0;
+    virtual int sizeX() = 0;
+    virtual int sizeY() = 0;
 public slots:
     void updateBuffer();
 protected:
