@@ -44,28 +44,12 @@ void qpty::runProcess(char *command, char *args[], const QString & pref)
 
     pty.start(QString("pseudo_run"), largs );
     if (pty.waitForStarted() == false) {
-        this->processString("Error starting command \n");
+        this->processString("Error starting command pseudo_run \n");
         return ;
     }
 
-    QThread::sleep(4);
-
-    fd_in = open((QString("/home/tkwk/.germinal/")+prefix+QString("_in")).toStdString().c_str(), O_WRONLY);
-    if(fd_in == -1) {
-        std::cout << strerror(errno) << std::endl;
-        return;
-    }
-    fd_out = open((QString("/home/tkwk/.germinal/")+prefix+QString("_out")).toStdString().c_str(), O_RDONLY);
-    if(fd_out == -1) {
-        std::cout << strerror(errno) << std::endl;
-        return;
-    }
-
-
     reader.killed = false;
     reader.start();
-
-    this->readyForInput = true;
 }
 
 void qpty::updateBuffer() {
@@ -84,7 +68,7 @@ void qpty::updateBuffer() {
 
 void qpty::closeCurrentProcess() {
     reader.killed = true;
-    kill(pty.pid(),SIGINT);
+    kill(pty.pid(),SIGPIPE);
     reader.wait();
     ::close(fd_in);
     ::close(fd_out);
@@ -94,7 +78,8 @@ void qpty::closeCurrentProcess() {
 
 qpty::~qpty() {
     delete[] buffer;
-    closeCurrentProcess();
+    if(this->readyForInput)
+        closeCurrentProcess();
 }
 
 PtyRead::PtyRead() : QThread()
@@ -104,6 +89,43 @@ PtyRead::PtyRead() : QThread()
 
 void PtyRead::run()
 {
+    uid_t uid = getuid();
+    struct passwd *pw = getpwuid(uid);
+
+    if (pw == NULL) {
+        std::cout << "Failed to read /etc/passwd" << std::endl;
+        kill(parent->pty.pid(),SIGPIPE);
+        parent->pty.waitForFinished();
+        return;
+    }
+
+    //check if pipes are ready
+    for(int i=0;i<20;i++) {
+        if( access( (pw->pw_dir + QString("/.germinal/")+parent->prefix+QString("_in")).toStdString().c_str(), W_OK ) != -1 )
+            break;
+        QThread::msleep(250);
+    }
+
+    parent->fd_in = open((pw->pw_dir + QString("/.germinal/")+parent->prefix+QString("_in")).toStdString().c_str(), O_WRONLY);
+    if(parent->fd_in == -1) {
+        std::cout << (pw->pw_dir + QString("/.germinal/")+parent->prefix+QString("_in")).toStdString().c_str() << std::endl;
+        std::cout << strerror(errno) << std::endl;
+        kill(parent->pty.pid(),SIGPIPE);
+        parent->pty.waitForFinished();
+        return;
+    }
+    parent->fd_out = open((pw->pw_dir + QString("/.germinal/")+parent->prefix+QString("_out")).toStdString().c_str(), O_RDONLY);
+    if(parent->fd_out == -1) {
+        std::cout << (pw->pw_dir + QString("/.germinal/")+parent->prefix+QString("_out")).toStdString().c_str() << std::endl;
+        std::cout << strerror(errno) << std::endl;
+        ::close(parent->fd_in);
+        kill(parent->pty.pid(),SIGPIPE);
+        parent->pty.waitForFinished();
+        return;
+    }
+
+    parent->readyForInput = true;
+
     fd_set fd_in;
     struct timeval tv;
 

@@ -16,6 +16,9 @@
 #include <iostream>
 #include <stdio.h>
 
+#include <pwd.h>
+#include <sys/types.h>
+
 #define B_SIZE 150000
 #define RW_SIZE 15000
 
@@ -35,7 +38,7 @@ public:
 class qpty : public QWidget
 {
     Q_OBJECT
-
+    friend class PtyRead;
 public:
     explicit qpty(QWidget *parent = nullptr);
     virtual ~qpty();
@@ -52,10 +55,6 @@ public:
     void processInput(char c);
     void processInput(const char *);
 
-    int max_cursor;
-    int buffer_cursor;
-    char * buffer;
-
     virtual void insertString(const char * string) = 0;
     virtual void setColor(const QColor &) = 0;
     virtual void moveCursor(int x, int y) = 0;
@@ -70,6 +69,9 @@ public:
     virtual const int & sizeY() = 0;
 public slots:
     void updateBuffer();
+protected:
+    QColor palette[8];
+    QColor default_color;
 private:
     bool readyForInput;
     QTimer frames;
@@ -81,8 +83,9 @@ private:
 
     QString prefix;
 
-    QColor palette[8];
-    QColor default_color;
+    int max_cursor;
+    int buffer_cursor;
+    char * buffer;
 };
 
 #endif // QPTY_H
