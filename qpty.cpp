@@ -1,7 +1,7 @@
 #include "qpty.h"
 
-qpty::qpty(QWidget *parent)
-    : QWidget(parent)
+qpty::qpty(QObject * parent) :
+    QGraphicsScene(parent)
 {
     palette[0] = QColor("black");
     palette[1] = QColor("red");
@@ -175,6 +175,11 @@ void qpty::processInput(const char *c)
             //std::cout << "interrupted" << std::endl;
         }
     }
+}
+
+void qpty::keyPressEvent(QKeyEvent *e)
+{
+    this->processInput(e->text().toStdString().c_str());
 }
 
 void qpty::processString(const char *array) {

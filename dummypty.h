@@ -6,7 +6,6 @@
 
 class DummyPty : public qpty
 {
-    Q_OBJECT
 public:
     explicit DummyPty(QWidget *parent = nullptr);
 

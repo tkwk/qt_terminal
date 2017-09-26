@@ -18,6 +18,8 @@
 
 #include <pwd.h>
 #include <sys/types.h>
+#include <QGraphicsScene>
+#include <QKeyEvent>
 
 #define B_SIZE 150000
 #define RW_SIZE 15000
@@ -35,12 +37,13 @@ public:
     qpty * parent;
 };
 
-class qpty : public QWidget
+class qpty : public QGraphicsScene
 {
     Q_OBJECT
+
     friend class PtyRead;
 public:
-    explicit qpty(QWidget *parent = nullptr);
+    explicit qpty(QObject * parent = NULL);
     virtual ~qpty();
     void runProcess(char * command, char * args[] = NULL, const QString & pref = "");
     void closeCurrentProcess();
@@ -54,6 +57,8 @@ public:
     void pressEnter();
     void processInput(char c);
     void processInput(const char *);
+
+    void keyPressEvent(QKeyEvent *e);
 
     virtual void insertString(const char * string) = 0;
     virtual void setColor(const QColor &) = 0;

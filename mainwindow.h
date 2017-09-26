@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <dummypty.h>
+#include <QGraphicsView>
 
 namespace Ui {
 class MainWindow;
@@ -14,9 +16,9 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    bool eventFilter(QObject *obj, QEvent *event);
 
 private:
+    DummyPty * terminal;
     Ui::MainWindow *ui;
 
 };
