@@ -3,13 +3,12 @@
 
 #include "qpty.h"
 
-
 class DummyPty : public qpty
 {
 public:
     explicit DummyPty(QWidget *parent = nullptr);
 
-    virtual void insertString(const char * string) {std::cout << string << std::flush;}
+    virtual void insertString(const char * string);
     virtual void setColor(const QColor &) {}
     virtual void moveCursor(int x, int y) {}
     virtual void moveCursorVerticaly(int dy) {}
@@ -21,6 +20,11 @@ public:
     virtual int cursorY() {return 0;}
     virtual int sizeX() {return 0;}
     virtual int sizeY() {return 0;}
+
+private:
+    int l;
+    int c;
+    QFont font;
 };
 
 #endif // DUMMYPTY_H

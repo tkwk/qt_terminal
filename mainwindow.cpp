@@ -16,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     terminal = new DummyPty(this);
     QGraphicsView *view = new QGraphicsView(terminal);
+    view->setSceneRect(0, 0, 2000, 1000);
     setCentralWidget(view);
     view->show();
 

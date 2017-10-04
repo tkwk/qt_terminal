@@ -41,3 +41,4 @@ LIBS += -pthread
 
 FORMS += \
         mainwindow.ui
+RESOURCES = fonts.qrc

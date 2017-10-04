@@ -1,0 +1,6 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+    <file>fonts/ter-u16n.bdf</file>
+    <file>fonts/ter-u32n.bdf</file>
+</qresource>
+</RCC>
