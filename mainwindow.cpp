@@ -12,6 +12,8 @@ MainWindow::MainWindow(QWidget *parent) :
     char * command = "bash";
     char * args[] = {command,0};
 
+    setFocusPolicy( Qt::NoFocus);
+
     terminal = new DummyPty(this);
     QGraphicsView *view = new QGraphicsView(terminal);
     setCentralWidget(view);
