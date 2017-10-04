@@ -24,6 +24,7 @@ public:
 private:
     int l;
     int c;
+    QFont font;
 };
 
 #endif // DUMMYPTY_H
